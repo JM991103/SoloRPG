@@ -8,14 +8,25 @@ public class PlayerController : MonoBehaviour
 {
     PlayerInputAction inputActions;
     CharacterController cc;
+    Animator anim;
 
     Vector3 inputDir;
     public float currentSpeed = 3.0f;
+    Quaternion targetRotation = Quaternion.identity;
+
+    enum MoveMode
+    {
+        Walk = 0,
+        Run
+    }
+
+    MoveMode moveMode = MoveMode.Walk;
 
     private void Awake()
     {
         inputActions = new PlayerInputAction();
         cc = GetComponent<CharacterController>();
+        anim = GetComponentInChildren<Animator>();
     }
 
     private void OnEnable()
@@ -47,6 +58,37 @@ public class PlayerController : MonoBehaviour
         inputDir.x = input.x;
         inputDir.y = 0.0f;
         inputDir.z = input.y;
+
+        Debug.Log($"{inputDir.x} {inputDir.z}");
+        
+        if (!context.canceled)
+        {
+            Quaternion cameraYRotation = Quaternion.Euler(0, Camera.main.transform.rotation.eulerAngles.y, 0);  // 카메라의 y축 회전만 분리
+            // 카메라의 y축 회전을 inputDir에 곱한다. => inputDir과 카메라가 xz평면상에서 바라보는 방향을 일치시킴
+            inputDir = cameraYRotation * inputDir;
+
+            targetRotation = Quaternion.LookRotation(inputDir); // inputDir 방향으로 바라보는 회전 만들기
+
+            if (moveMode == MoveMode.Walk)
+            {
+                anim.SetFloat("Speed", 0.5f);   // walk모드면 걷는 애니메이션
+
+                anim.SetFloat("InputY", inputDir.z);
+                anim.SetFloat("InputX", inputDir.x);
+            }
+            else
+            {
+                anim.SetFloat("Speed", 1.0f);   // Run모드면 달리는 애니메이션
+            }
+
+            //inputDir.y = -2.0f;
+        }
+        else
+        {
+            inputDir = Vector3.zero;
+            anim.SetFloat("Speed", 0.0f);   // 입력이 안들어 왔으면 대기 애니메이션.
+        }
+
     }
 
     private void OnAttack(InputAction.CallbackContext context)
