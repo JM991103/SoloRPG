@@ -16,7 +16,12 @@ public class PlayerController : MonoBehaviour
     public float walkSpeed = 3.0f;
     public float runSpeed = 5.0f;
     Quaternion targetRotation = Quaternion.identity;
+
     bool isMoveChange = false;
+    public bool isCursor = false;
+
+
+    Vector2 mouseDelta;
 
     enum MoveMode
     {
@@ -35,6 +40,12 @@ public class PlayerController : MonoBehaviour
         player = GetComponentInChildren<Transform>();
     }
 
+    private void Start()
+    {
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+    }
+
     private void OnEnable()
     {
         inputActions.Player.Enable();
@@ -42,12 +53,21 @@ public class PlayerController : MonoBehaviour
         inputActions.Player.Move.canceled += OnMove;
         inputActions.Player.MoveModeChange.performed += OnMoveModeChange;
         inputActions.Player.MoveModeChange.canceled += OnMoveModeChange;
+        inputActions.Player.CursorLock.performed += OnCursorLock;
+        inputActions.Player.CursorLock.canceled += OnCursorLock;        
         inputActions.Player.Attack.performed += OnAttack;
+    }
+
+    private void onMousePosition(InputAction.CallbackContext context)
+    {
+        mouseDelta = context.ReadValue<Vector2>();
     }
 
     private void OnDisable()
     {
-        inputActions.Player.Attack.performed -= OnAttack;
+        inputActions.Player.Attack.performed -= OnAttack;        
+        inputActions.Player.CursorLock.performed -= OnCursorLock;
+        inputActions.Player.CursorLock.canceled -= OnCursorLock;
         inputActions.Player.MoveModeChange.performed -= OnMoveModeChange;
         inputActions.Player.MoveModeChange.canceled -= OnMoveModeChange;
         inputActions.Player.Move.performed -= OnMove;
@@ -60,6 +80,7 @@ public class PlayerController : MonoBehaviour
         cc.Move(currentSpeed * Time.deltaTime * inputDir);
 
         player.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 10 * Time.deltaTime);
+                
     }
 
     private void OnMove(InputAction.CallbackContext context)
@@ -129,13 +150,31 @@ public class PlayerController : MonoBehaviour
                 anim.SetFloat("Speed", 0.5f);   // 움직이는 중일 때만 재생하는 애니메이션 변경
             }
         }
+    } 
+
+    private void OnCursorLock(InputAction.CallbackContext _)
+    {
+        isCursor = !isCursor;
+        CursorVisible(isCursor);
     }
 
+    void CursorVisible(bool isCursor)
+    {
+        
+        if (isCursor)
+        {            
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
+        else
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
+    }
 
     private void OnAttack(InputAction.CallbackContext context)
     {
         
     }
-
-
 }
