@@ -2,112 +2,67 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class CameraController : MonoBehaviour
 {
-    PlayerInputAction playerInput;
-    PlayerController player;
+    [SerializeField]
+    Transform characterBody;
+    [SerializeField]
+    Transform cameraArm;
+    
+    PlayerController playerController;
 
-    public Transform target;
-    public float followSpeed = 10f;
-    public float sensitity = 100f;
-    public float clampAngle = 70f;
+    Animator animator;
 
-    private float rotX;
-    private float rotY;
-
-    public Transform realCamera;
-    public Vector3 dirNormalized;
-    public Vector3 finalDir;
-    public float minDistance;
-    public float maxDistance;
-    public float finalDistance;
-    public float smoothness = 10f;
-    //public Vector3 offset;
-
-    private void Awake()
+    private void Start()
     {
-        playerInput = new PlayerInputAction();
-        player = FindObjectOfType<PlayerController>();
+        animator = characterBody.GetComponent<Animator>();
+        playerController = GetComponent<PlayerController>();
     }
 
-    private void OnEnable()
+    private void Update()
     {
-        playerInput.Player.Enable();
-        playerInput.Player.MousePosition.performed += onMousePosition;
-        playerInput.Player.MouseWheel.performed += onMouseWheel;
+        LookAround();
+        //Move();
     }
 
-    private void onMouseWheel(InputAction.CallbackContext context)
+    void Move()
     {
-        Vector2 wheel = context.ReadValue<Vector2>();
+        Vector2 moveInput = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
 
-        Debug.Log(wheel);
-    }
+        bool isMove = moveInput.magnitude != 0;
 
-    private void onMousePosition(InputAction.CallbackContext context)
-    {
-        if (!player.isCursor)
+        //animator.SetBool("isMove", isMove);
+
+        if (isMove)
         {
-            rotX += context.ReadValue<Vector2>().x * sensitity * Time.deltaTime;
-            rotY += context.ReadValue<Vector2>().y * sensitity * Time.deltaTime;
+            Vector3 lookForward = new Vector3(cameraArm.forward.x, 0f, cameraArm.forward.z).normalized;
+            Vector3 lookRight = new Vector3(cameraArm.right.x, 0f, cameraArm.right.z).normalized;
+            Vector3 moveDir = lookForward * moveInput.y + lookRight * moveInput.x;
 
-            rotX = Mathf.Clamp(rotX, -clampAngle, clampAngle);
-            Quaternion rot = Quaternion.Euler(rotX, rotY, 0);
-
-            transform.rotation = rot;
-            
-            //Debug.Log($"{rotX}, {rotY}");
+            characterBody.forward = lookForward;
+            transform.position += moveDir * Time.deltaTime * 5f;
         }
-
     }
 
-    private void OnDisable()
+    void LookAround()
     {
+        if (!playerController.isCursor)
+        {
+            Vector2 mouseDelta = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
+            Vector3 camAngle = cameraArm.rotation.eulerAngles;
+            float x = camAngle.x - mouseDelta.y;
 
-        playerInput.Player.MouseWheel.performed -= onMouseWheel; 
-        playerInput.Player.MousePosition.performed -= onMousePosition;
-        playerInput.Player.Disable();
+            if (x < 180f)
+            {
+                x = Mathf.Clamp(x, -1f, 70f);
+            }
+            else
+            {
+                x = Mathf.Clamp(x, 335f, 361f);
+            }
+
+            cameraArm.rotation = Quaternion.Euler(x, camAngle.y + mouseDelta.x, camAngle.z);
+        }
     }
-
-    //private void Start()
-    //{
-    //    rotX = transform.localRotation.eulerAngles.x;
-    //    rotY = transform.localRotation.eulerAngles.y;
-
-    //    dirNormalized = realCamera.localPosition.normalized;
-    //    finalDistance = realCamera.localPosition.magnitude;
-    //}
-
-    //private void Update()
-    //{
-    //    rotX += -(Input.GetAxis("Mouse Y")) * sensitity * Time.deltaTime;
-    //    rotY += Input.GetAxis("Mouse X") * sensitity * Time.deltaTime;
-
-    //    rotX = Mathf.Clamp(rotX, -clampAngle, clampAngle);
-
-    //    Quaternion rot = Quaternion.Euler(rotX, rotY, 0);
-    //    transform.rotation = rot;
-    //}
-
-    //private void LateUpdate()
-    //{
-    //    //transform.position = target.position + offset;
-
-    //    transform.position = Vector3.MoveTowards(transform.position, target.position, followSpeed * Time.deltaTime);
-
-    //    finalDir = transform.TransformPoint(dirNormalized * maxDistance);
-
-    //    RaycastHit hit;
-    //    if (Physics.Linecast(transform.position, finalDir, out hit))
-    //    {
-    //        finalDistance = Mathf.Clamp(hit.distance, minDistance, maxDistance);
-    //    }
-    //    else
-    //    {
-    //        finalDistance = maxDistance;
-    //    }
-    //    realCamera.localPosition = Vector3.Lerp(realCamera.localPosition, dirNormalized * finalDistance, Time.deltaTime * smoothness);
-    //}
 }

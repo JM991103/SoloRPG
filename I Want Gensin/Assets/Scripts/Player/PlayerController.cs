@@ -58,11 +58,6 @@ public class PlayerController : MonoBehaviour
         inputActions.Player.Attack.performed += OnAttack;
     }
 
-    private void onMousePosition(InputAction.CallbackContext context)
-    {
-        mouseDelta = context.ReadValue<Vector2>();
-    }
-
     private void OnDisable()
     {
         inputActions.Player.Attack.performed -= OnAttack;        
