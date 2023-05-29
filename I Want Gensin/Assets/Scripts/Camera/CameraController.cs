@@ -6,24 +6,24 @@ using UnityEngine;
 public class CameraController : MonoBehaviour
 {
     [SerializeField]
-    Transform characterBody;
+    Transform characterBody;    // 캐릭터 모델을 관리
     [SerializeField]
-    Transform cameraArm;
-    
+    Transform cameraArm;        // 카메라 회전을 관리
+
     PlayerController playerController;
 
-    Animator animator;
+    Animator animator;          // 애니메이션 관리
 
     private void Start()
     {
-        animator = characterBody.GetComponent<Animator>();
-        playerController = GetComponent<PlayerController>();
+        animator = characterBody.GetComponentInChildren<Animator>();
+        playerController = GetComponentInChildren<PlayerController>();
     }
 
     private void Update()
     {
         LookAround();
-        //Move();
+        Move();
     }
 
     void Move()
@@ -41,8 +41,10 @@ public class CameraController : MonoBehaviour
             Vector3 moveDir = lookForward * moveInput.y + lookRight * moveInput.x;
 
             characterBody.forward = lookForward;
-            transform.position += moveDir * Time.deltaTime * 5f;
+            transform.position += moveDir * Time.deltaTime * 1f;
         }
+
+        //Debug.DrawRay(cameraArm.position, new Vector3(cameraArm.forward.x, 0f, cameraArm.forward.z).normalized, Color.red);
     }
 
     void LookAround()
@@ -51,6 +53,7 @@ public class CameraController : MonoBehaviour
         {
             Vector2 mouseDelta = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
             Vector3 camAngle = cameraArm.rotation.eulerAngles;
+
             float x = camAngle.x - mouseDelta.y;
 
             if (x < 180f)
@@ -65,4 +68,5 @@ public class CameraController : MonoBehaviour
             cameraArm.rotation = Quaternion.Euler(x, camAngle.y + mouseDelta.x, camAngle.z);
         }
     }
+
 }
