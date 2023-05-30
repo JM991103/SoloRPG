@@ -19,9 +19,7 @@ public class PlayerController : MonoBehaviour
 
     bool isMoveChange = false;
     public bool isCursor = false;
-
-
-    Vector2 mouseDelta;
+    public float smoothness = 10;
 
     enum MoveMode
     {
@@ -35,9 +33,9 @@ public class PlayerController : MonoBehaviour
     {
         inputActions = new PlayerInputAction();
         cc = GetComponent<CharacterController>();
-        anim = GetComponentInChildren<Animator>();
+        anim = GetComponent<Animator>();
 
-        player = GetComponentInChildren<Transform>();
+        player = GetComponent<Transform>();
     }
 
     private void Start()
@@ -75,8 +73,7 @@ public class PlayerController : MonoBehaviour
         cc.Move(currentSpeed * Time.deltaTime * inputDir);
 
         player.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 10 * Time.deltaTime);
-                
-    }
+    }    
 
     private void OnMove(InputAction.CallbackContext context)
     {
@@ -128,7 +125,7 @@ public class PlayerController : MonoBehaviour
     void MoveChange(bool change)
     {
         if (change)
-        {
+        {            
             moveMode = MoveMode.Run;
             currentSpeed = runSpeed;
             if (inputDir != Vector3.zero)
@@ -137,7 +134,7 @@ public class PlayerController : MonoBehaviour
             }
         }
         else
-        {
+        {            
             moveMode = MoveMode.Walk;
             currentSpeed = walkSpeed;
             if (inputDir != Vector3.zero)
@@ -154,8 +151,7 @@ public class PlayerController : MonoBehaviour
     }
 
     void CursorVisible(bool isCursor)
-    {
-        
+    {        
         if (isCursor)
         {            
             Cursor.lockState = CursorLockMode.None;
@@ -172,4 +168,5 @@ public class PlayerController : MonoBehaviour
     {
         
     }
+
 }
