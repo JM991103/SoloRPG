@@ -42,22 +42,13 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "MousePosition",
-                    "type": "Value",
-                    "id": "8f28823c-85ca-403b-b4b4-77cb770cf013",
-                    "expectedControlType": "Vector2",
+                    "name": "Jump",
+                    "type": "Button",
+                    "id": "2b0b5b9a-4628-45f9-866f-af07cd751094",
+                    "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
-                    "initialStateCheck": true
-                },
-                {
-                    "name": "MouseWheel",
-                    "type": "Value",
-                    "id": "49fbdf6a-3713-4b79-b4d8-0451cc4d91ff",
-                    "expectedControlType": "Vector2",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": true
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -151,23 +142,12 @@
                 },
                 {
                     "name": "",
-                    "id": "0af47881-aa5a-4ec1-9d72-87d5235cfadb",
-                    "path": "<Mouse>/position",
+                    "id": "3694f8ac-ac79-4553-828c-9e08e4f7455a",
+                    "path": "<Keyboard>/space",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "MousePosition",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "64fb7859-c4a4-41e0-8018-de3e2373e9be",
-                    "path": "<Mouse>/scroll",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "MouseWheel",
+                    "action": "Jump",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

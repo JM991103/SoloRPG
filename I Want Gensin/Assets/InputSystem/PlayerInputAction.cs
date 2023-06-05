@@ -64,22 +64,13 @@ public partial class @PlayerInputAction : IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""MousePosition"",
-                    ""type"": ""Value"",
-                    ""id"": ""8f28823c-85ca-403b-b4b4-77cb770cf013"",
-                    ""expectedControlType"": ""Vector2"",
+                    ""name"": ""Jump"",
+                    ""type"": ""Button"",
+                    ""id"": ""2b0b5b9a-4628-45f9-866f-af07cd751094"",
+                    ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
-                    ""initialStateCheck"": true
-                },
-                {
-                    ""name"": ""MouseWheel"",
-                    ""type"": ""Value"",
-                    ""id"": ""49fbdf6a-3713-4b79-b4d8-0451cc4d91ff"",
-                    ""expectedControlType"": ""Vector2"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": true
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -173,23 +164,12 @@ public partial class @PlayerInputAction : IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""0af47881-aa5a-4ec1-9d72-87d5235cfadb"",
-                    ""path"": ""<Mouse>/position"",
+                    ""id"": ""3694f8ac-ac79-4553-828c-9e08e4f7455a"",
+                    ""path"": ""<Keyboard>/space"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""MousePosition"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""64fb7859-c4a4-41e0-8018-de3e2373e9be"",
-                    ""path"": ""<Mouse>/scroll"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""MouseWheel"",
+                    ""action"": ""Jump"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -221,8 +201,7 @@ public partial class @PlayerInputAction : IInputActionCollection2, IDisposable
         m_Player_MoveModeChange = m_Player.FindAction("MoveModeChange", throwIfNotFound: true);
         m_Player_Attack = m_Player.FindAction("Attack", throwIfNotFound: true);
         m_Player_CursorLock = m_Player.FindAction("CursorLock", throwIfNotFound: true);
-        m_Player_MousePosition = m_Player.FindAction("MousePosition", throwIfNotFound: true);
-        m_Player_MouseWheel = m_Player.FindAction("MouseWheel", throwIfNotFound: true);
+        m_Player_Jump = m_Player.FindAction("Jump", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -286,8 +265,7 @@ public partial class @PlayerInputAction : IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_MoveModeChange;
     private readonly InputAction m_Player_Attack;
     private readonly InputAction m_Player_CursorLock;
-    private readonly InputAction m_Player_MousePosition;
-    private readonly InputAction m_Player_MouseWheel;
+    private readonly InputAction m_Player_Jump;
     public struct PlayerActions
     {
         private @PlayerInputAction m_Wrapper;
@@ -296,8 +274,7 @@ public partial class @PlayerInputAction : IInputActionCollection2, IDisposable
         public InputAction @MoveModeChange => m_Wrapper.m_Player_MoveModeChange;
         public InputAction @Attack => m_Wrapper.m_Player_Attack;
         public InputAction @CursorLock => m_Wrapper.m_Player_CursorLock;
-        public InputAction @MousePosition => m_Wrapper.m_Player_MousePosition;
-        public InputAction @MouseWheel => m_Wrapper.m_Player_MouseWheel;
+        public InputAction @Jump => m_Wrapper.m_Player_Jump;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -319,12 +296,9 @@ public partial class @PlayerInputAction : IInputActionCollection2, IDisposable
                 @CursorLock.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCursorLock;
                 @CursorLock.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCursorLock;
                 @CursorLock.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCursorLock;
-                @MousePosition.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMousePosition;
-                @MousePosition.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMousePosition;
-                @MousePosition.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMousePosition;
-                @MouseWheel.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMouseWheel;
-                @MouseWheel.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMouseWheel;
-                @MouseWheel.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMouseWheel;
+                @Jump.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnJump;
+                @Jump.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnJump;
+                @Jump.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnJump;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -341,12 +315,9 @@ public partial class @PlayerInputAction : IInputActionCollection2, IDisposable
                 @CursorLock.started += instance.OnCursorLock;
                 @CursorLock.performed += instance.OnCursorLock;
                 @CursorLock.canceled += instance.OnCursorLock;
-                @MousePosition.started += instance.OnMousePosition;
-                @MousePosition.performed += instance.OnMousePosition;
-                @MousePosition.canceled += instance.OnMousePosition;
-                @MouseWheel.started += instance.OnMouseWheel;
-                @MouseWheel.performed += instance.OnMouseWheel;
-                @MouseWheel.canceled += instance.OnMouseWheel;
+                @Jump.started += instance.OnJump;
+                @Jump.performed += instance.OnJump;
+                @Jump.canceled += instance.OnJump;
             }
         }
     }
@@ -366,7 +337,6 @@ public partial class @PlayerInputAction : IInputActionCollection2, IDisposable
         void OnMoveModeChange(InputAction.CallbackContext context);
         void OnAttack(InputAction.CallbackContext context);
         void OnCursorLock(InputAction.CallbackContext context);
-        void OnMousePosition(InputAction.CallbackContext context);
-        void OnMouseWheel(InputAction.CallbackContext context);
+        void OnJump(InputAction.CallbackContext context);
     }
 }

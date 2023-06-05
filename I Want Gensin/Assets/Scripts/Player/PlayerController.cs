@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
@@ -20,6 +22,13 @@ public class PlayerController : MonoBehaviour
     bool isMoveChange = false;
     public bool isCursor = false;
     public float smoothness = 10;
+
+    public float jumpHeight = 2f;
+    public float groundDistance = 0.2f;
+    private bool isJumping = false;
+    bool isGrounded;
+    public LayerMask groundMask;
+    private Vector3 velocity;
 
     enum MoveMode
     {
@@ -52,13 +61,15 @@ public class PlayerController : MonoBehaviour
         inputActions.Player.MoveModeChange.performed += OnMoveModeChange;
         inputActions.Player.MoveModeChange.canceled += OnMoveModeChange;
         inputActions.Player.CursorLock.performed += OnCursorLock;
-        inputActions.Player.CursorLock.canceled += OnCursorLock;        
+        inputActions.Player.CursorLock.canceled += OnCursorLock;
+        inputActions.Player.Jump.performed += OnJump;
         inputActions.Player.Attack.performed += OnAttack;
     }
 
     private void OnDisable()
     {
-        inputActions.Player.Attack.performed -= OnAttack;        
+        inputActions.Player.Attack.performed -= OnAttack;
+        inputActions.Player.Jump.performed -= OnJump;
         inputActions.Player.CursorLock.performed -= OnCursorLock;
         inputActions.Player.CursorLock.canceled -= OnCursorLock;
         inputActions.Player.MoveModeChange.performed -= OnMoveModeChange;
@@ -73,6 +84,8 @@ public class PlayerController : MonoBehaviour
         cc.Move(currentSpeed * Time.deltaTime * inputDir);
 
         player.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 10 * Time.deltaTime);
+
+        JumpController();
     }    
 
     private void OnMove(InputAction.CallbackContext context)
@@ -164,9 +177,36 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    private void OnJump(InputAction.CallbackContext _)
+    {
+        if (isGrounded)
+        {
+            isJumping = true;
+            anim.SetTrigger("Jump");
+            velocity.y = Mathf.Sqrt(jumpHeight * -2f * Physics.gravity.y);
+        }
+    }
+
+    void JumpController()
+    {
+        isGrounded = Physics.CheckSphere(transform.position, groundDistance, groundMask);
+        
+
+        if (isGrounded && velocity.y < 0)
+        {
+            velocity.y = -2f;
+            //anim.ResetTrigger("Jump");
+        }
+
+        velocity.y += Physics.gravity.y * Time.deltaTime;
+
+        cc.Move(velocity * Time.deltaTime);
+    }
+
+
     private void OnAttack(InputAction.CallbackContext context)
     {
-        
+        Debug.Log("АјАн");
     }
 
 }
