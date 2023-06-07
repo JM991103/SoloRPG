@@ -206,6 +206,7 @@ public class PlayerController : MonoBehaviour
 
     private void OnAttack(InputAction.CallbackContext context)
     {
+        anim.SetTrigger("Attack");
         Debug.Log("АјАн");
     }
 
