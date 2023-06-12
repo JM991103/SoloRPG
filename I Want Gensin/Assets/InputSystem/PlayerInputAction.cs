@@ -78,7 +78,7 @@ public partial class @PlayerInputAction : IInputActionCollection2, IDisposable
                     ""name"": """",
                     ""id"": ""0d5c092d-670d-4a84-86e9-7cf91e19b5c9"",
                     ""path"": ""<Mouse>/leftButton"",
-                    ""interactions"": """",
+                    ""interactions"": ""Hold,Press"",
                     ""processors"": """",
                     ""groups"": ""KeyBoard&Mouse"",
                     ""action"": ""Attack"",
