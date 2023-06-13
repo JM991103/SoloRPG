@@ -213,14 +213,22 @@ public class PlayerController : MonoBehaviour
             if (context.interaction is HoldInteraction) // 차지 공격
             {
                 Debug.Log("차지 공격");
+                
             }
             else if (context.interaction is PressInteraction)   // 일반 공격
             {
-                int comboState = anim.GetInteger("ComboState"); // comboState를 애니메이터에서 읽어와서
-                comboState++;   // 콤보 상태 1 증가 시키기;                
-                anim.SetInteger("ComboState", comboState);  // 애니메이터에 증가된 콤보 상태 설정
-                anim.SetTrigger("Attack");                  // Attack 트리거 발동
-                Debug.Log($"콤보 {comboState}, 어택 트리거 발동");
+                int comboState = anim.GetInteger("ComboState"); // comboState를 애니메이터에서 읽어와서                                
+
+                if (comboState == 0)
+                {
+                    anim.SetTrigger("Attack");                  // Attack 트리거 발동
+                }
+
+                if (comboState <= 3)
+                {
+                    comboState++;   // 콤보 상태 1 증가 시키기;
+                    anim.SetInteger("ComboState", comboState);  // 애니메이터에 증가된 콤보 상태 설정
+                }
             }
         }
         
