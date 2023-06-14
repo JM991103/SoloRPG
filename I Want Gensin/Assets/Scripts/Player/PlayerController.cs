@@ -209,7 +209,7 @@ public class PlayerController : MonoBehaviour
     private void OnAttack(InputAction.CallbackContext context)
     {
         if (context.performed)
-        {
+        {            
             if (context.interaction is HoldInteraction) // 차지 공격
             {
                 Debug.Log("차지 공격");
