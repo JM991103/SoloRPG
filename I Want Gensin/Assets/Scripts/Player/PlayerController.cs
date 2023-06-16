@@ -7,6 +7,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Interactions;
+using static UnityEngine.EventSystems.EventTrigger;
 
 public class PlayerController : MonoBehaviour
 {
@@ -39,6 +40,7 @@ public class PlayerController : MonoBehaviour
     }
 
     MoveMode moveMode = MoveMode.Walk;
+    Player playercomponent;
 
     private void Awake()
     {
@@ -47,6 +49,7 @@ public class PlayerController : MonoBehaviour
         anim = GetComponent<Animator>();
 
         player = GetComponent<Transform>();
+        playercomponent = GetComponent<Player>();
     }
 
     private void Start()
@@ -207,31 +210,53 @@ public class PlayerController : MonoBehaviour
 
 
     private void OnAttack(InputAction.CallbackContext context)
-    {
+    {       
         if (context.performed)
-        {            
-            if (context.interaction is HoldInteraction) // 차지 공격
+        {
+            if (enemy)
             {
-                Debug.Log("차지 공격");
-                
-            }
-            else if (context.interaction is PressInteraction)   // 일반 공격
-            {
-                int comboState = anim.GetInteger("ComboState"); // comboState를 애니메이터에서 읽어와서                                
-
-                if (comboState == 0)
+                if (context.interaction is HoldInteraction) // 차지 공격
                 {
-                    anim.SetTrigger("Attack");                  // Attack 트리거 발동
-                }
+                    Debug.Log("차지 공격");
 
-                if (comboState <= 3)
-                {
-                    comboState++;   // 콤보 상태 1 증가 시키기;
-                    anim.SetInteger("ComboState", comboState);  // 애니메이터에 증가된 콤보 상태 설정
                 }
+                else if (context.interaction is PressInteraction)   // 일반 공격
+                {
+
+                    playercomponent.Attack(target);
+
+                    int comboState = anim.GetInteger("ComboState"); // comboState를 애니메이터에서 읽어와서                                
+
+                    if (comboState == 0)
+                    {
+                        anim.SetTrigger("Attack");                  // Attack 트리거 발동
+                    }
+
+                    if (comboState <= 3)
+                    {
+                        comboState++;   // 콤보 상태 1 증가 시키기;
+                        anim.SetInteger("ComboState", comboState);  // 애니메이터에 증가된 콤보 상태 설정
+                    }
+                } 
             }
-        }
-        
+        }        
     }
 
+
+    bool enemy;
+    IBattle target;
+
+        private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Enemy"))
+        {
+            enemy = true;
+            target = other.GetComponent<IBattle>();                      
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        enemy = false;
+    }
 }

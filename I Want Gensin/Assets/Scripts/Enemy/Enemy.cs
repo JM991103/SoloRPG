@@ -1,9 +1,10 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class Enemy : MonoBehaviour
+public class Enemy : MonoBehaviour, IBattle, IHealth
 {
     /// <summary>
     /// 적이 이동할 목표의 트랜스폼
@@ -89,6 +90,36 @@ public class Enemy : MonoBehaviour
         }
     }
 
+    public float AttackPower => attackPower;
+
+    public float DefancePower => defencePower;
+
+    public float HP 
+    {
+        get => hp;
+        set
+        {
+            if (hp != value)
+            {
+                hp = value;
+
+                if (State != EnemyState.Dead && hp < 0)
+                {
+                    Die();
+                }
+
+                hp = Mathf.Clamp(hp, 0.0f, maxHP);
+
+                onHealthChange.Invoke(hp / maxHP);
+            }
+        }
+    }
+
+    public float MaxHP => maxHP;
+
+    public Action<float> onHealthChange { get; set; }
+    public Action onDie { get; set; }
+
     private void Awake()
     {
         anim = GetComponent<Animator>();
@@ -118,5 +149,25 @@ public class Enemy : MonoBehaviour
         {
             Debug.Log("플레이어가 나갔음");
         }
+    }
+
+    public void Attack(IBattle target)
+    {
+        target?.Defence(AttackPower);
+        
+    }
+
+    public void Defence(float damage)
+    {
+        if (State != EnemyState.Dead)
+        {
+        }
+            anim.SetTrigger("Hit");
+            hp -= (damage - defencePower);
+    }
+
+    public void Die()
+    {
+        Debug.Log("죽음");
     }
 }
