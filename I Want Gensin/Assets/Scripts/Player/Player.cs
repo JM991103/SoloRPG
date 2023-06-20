@@ -11,9 +11,11 @@ public class Player : MonoBehaviour, IBattle, IHealth
     public float defencePower = 3.0f;   // 방어력
     public float maxHP = 100.0f;        // 최대 HP
     float hp = 100.0f;                  // 현재 HP
+    int level = 1;
 
     bool isAlive = true;    // 살아있는지 죽었는지 확인용
 
+    public int Level => level;
     public float AttackPower => attackPower;
 
     public float DefancePower => defencePower;
@@ -30,6 +32,7 @@ public class Player : MonoBehaviour, IBattle, IHealth
                 if (hp < 0)
                 {
                     Die();
+                    Debug.Log("죽었습니다.");
                 }
 
                 hp = Mathf.Clamp(hp, 0.0f, maxHP);
@@ -39,7 +42,17 @@ public class Player : MonoBehaviour, IBattle, IHealth
         }
     }
 
-    public float MaxHP => maxHP;
+    public float MaxHP
+    {
+        get => maxHP;
+        set
+        {
+            if (maxHP != value)
+            {
+                maxHP = value;                
+            }
+        }
+    }
 
     public Action<float> onHealthChange { get; set; }
     public Action onDie { get; set; }
@@ -48,6 +61,11 @@ public class Player : MonoBehaviour, IBattle, IHealth
     private void Awake()
     {
         anim = GetComponent<Animator>();
+    }
+
+    private void Update()
+    {
+        // HP -= 0.1f; 체력 감소 확인
     }
 
     /// <summary>

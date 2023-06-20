@@ -69,10 +69,12 @@ public class PlayerController : MonoBehaviour
         inputActions.Player.CursorLock.canceled += OnCursorLock;
         inputActions.Player.Jump.performed += OnJump;
         inputActions.Player.Attack.performed += OnAttack;
+        inputActions.Player.interactionKey.performed += onInteraction;
     }
 
     private void OnDisable()
     {
+        inputActions.Player.interactionKey.performed -= onInteraction;
         inputActions.Player.Attack.performed -= OnAttack;
         inputActions.Player.Jump.performed -= OnJump;
         inputActions.Player.CursorLock.performed -= OnCursorLock;
@@ -242,12 +244,24 @@ public class PlayerController : MonoBehaviour
         }        
     }
 
+    GameObject scanObj;
+
+    private void onInteraction(InputAction.CallbackContext _)
+    {
+        if (scanObj != null)
+        {
+            Debug.Log(scanObj.name);
+        }
+    }
+
 
     bool enemy;
     IBattle target;
 
-        private void OnTriggerEnter(Collider other)
+    private void OnTriggerEnter(Collider other)
     {
+        scanObj = other.gameObject;
+
         if (other.CompareTag("Enemy"))
         {
             enemy = true;
@@ -257,6 +271,7 @@ public class PlayerController : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
+        scanObj = null;
         enemy = false;
     }
 }

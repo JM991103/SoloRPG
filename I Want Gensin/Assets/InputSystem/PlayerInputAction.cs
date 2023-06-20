@@ -71,6 +71,15 @@ public partial class @PlayerInputAction : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""interactionKey"",
+                    ""type"": ""Button"",
+                    ""id"": ""e2c59168-b157-45df-b241-a873da1fd16a"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -172,6 +181,17 @@ public partial class @PlayerInputAction : IInputActionCollection2, IDisposable
                     ""action"": ""Jump"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c91ad5cd-3f54-4d37-8f28-d7f9e43de20c"",
+                    ""path"": ""<Keyboard>/f"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""interactionKey"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -202,6 +222,7 @@ public partial class @PlayerInputAction : IInputActionCollection2, IDisposable
         m_Player_Attack = m_Player.FindAction("Attack", throwIfNotFound: true);
         m_Player_CursorLock = m_Player.FindAction("CursorLock", throwIfNotFound: true);
         m_Player_Jump = m_Player.FindAction("Jump", throwIfNotFound: true);
+        m_Player_interactionKey = m_Player.FindAction("interactionKey", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -266,6 +287,7 @@ public partial class @PlayerInputAction : IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Attack;
     private readonly InputAction m_Player_CursorLock;
     private readonly InputAction m_Player_Jump;
+    private readonly InputAction m_Player_interactionKey;
     public struct PlayerActions
     {
         private @PlayerInputAction m_Wrapper;
@@ -275,6 +297,7 @@ public partial class @PlayerInputAction : IInputActionCollection2, IDisposable
         public InputAction @Attack => m_Wrapper.m_Player_Attack;
         public InputAction @CursorLock => m_Wrapper.m_Player_CursorLock;
         public InputAction @Jump => m_Wrapper.m_Player_Jump;
+        public InputAction @interactionKey => m_Wrapper.m_Player_interactionKey;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -299,6 +322,9 @@ public partial class @PlayerInputAction : IInputActionCollection2, IDisposable
                 @Jump.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnJump;
                 @Jump.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnJump;
                 @Jump.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnJump;
+                @interactionKey.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInteractionKey;
+                @interactionKey.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInteractionKey;
+                @interactionKey.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInteractionKey;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -318,6 +344,9 @@ public partial class @PlayerInputAction : IInputActionCollection2, IDisposable
                 @Jump.started += instance.OnJump;
                 @Jump.performed += instance.OnJump;
                 @Jump.canceled += instance.OnJump;
+                @interactionKey.started += instance.OnInteractionKey;
+                @interactionKey.performed += instance.OnInteractionKey;
+                @interactionKey.canceled += instance.OnInteractionKey;
             }
         }
     }
@@ -338,5 +367,6 @@ public partial class @PlayerInputAction : IInputActionCollection2, IDisposable
         void OnAttack(InputAction.CallbackContext context);
         void OnCursorLock(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
+        void OnInteractionKey(InputAction.CallbackContext context);
     }
 }

@@ -60,6 +60,8 @@ public class Enemy : MonoBehaviour, IBattle, IHealth
     float attackSpeed = 1.0f;
     float attackCooltime = 1.0f;
 
+    IBattle target;
+
     protected EnemyState State
     {
         get => state;
@@ -133,13 +135,18 @@ public class Enemy : MonoBehaviour, IBattle, IHealth
 
         State = EnemyState.Wait;
         anim.SetTrigger("Stop");
+
+        onHealthChange += HP_Change;
+
     }
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
         {
-            Debug.Log("플레이어가 들어왔음");            
+            Debug.Log("플레이어가 들어왔음");
+            target = GetComponent<IBattle>();
+            State = EnemyState.Attack;
         }
     }
 
@@ -148,26 +155,33 @@ public class Enemy : MonoBehaviour, IBattle, IHealth
         if (other.CompareTag("Player"))
         {
             Debug.Log("플레이어가 나갔음");
+            target = null;
         }
     }
 
     public void Attack(IBattle target)
     {
+        //anim.SetTrigger("Attack");
         target?.Defence(AttackPower);
-        
     }
 
     public void Defence(float damage)
     {
         if (State != EnemyState.Dead)
         {
-        }
             anim.SetTrigger("Hit");
             hp -= (damage - defencePower);
+        }
     }
 
     public void Die()
     {
         Debug.Log("죽음");
+        State = EnemyState.Dead;
+    }
+
+    void HP_Change(float ratio)
+    {
+        Debug.Log("HP가 변경되었다");
     }
 }
