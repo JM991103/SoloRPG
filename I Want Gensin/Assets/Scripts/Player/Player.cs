@@ -20,6 +20,12 @@ public class Player : MonoBehaviour, IBattle, IHealth
 
     public float DefancePower => defencePower;
 
+    TestInteract scanObj;
+
+    public Collider[] colliders;
+
+    public Action<TestInteract, int>[] OnInteract = new Action<TestInteract, int>[10];
+
     public float HP 
     {
         get => hp;
@@ -65,7 +71,28 @@ public class Player : MonoBehaviour, IBattle, IHealth
 
     private void Update()
     {
-        // HP -= 0.1f; 체력 감소 확인
+        colliders = Physics.OverlapSphere(transform.position, 2.5f);
+
+        if (colliders != null)
+        {
+            for (int i = 0; i < colliders.Length; i++)
+            {
+                if (colliders[i].CompareTag("Interact"))
+                {
+                    scanObj = colliders[i].gameObject.GetComponent<TestInteract>();
+
+                    if (scanObj != null)
+                    {
+                        OnInteract[i]?.Invoke(scanObj, i);
+                    }
+                }
+                else
+                {
+                    OnInteract[i]?.Invoke(null, i);
+                }
+            }
+        }
+
     }
 
     /// <summary>
@@ -98,4 +125,7 @@ public class Player : MonoBehaviour, IBattle, IHealth
         isAlive = false;
         anim.SetBool("Die",isAlive);       
     }
+
+
+
 }

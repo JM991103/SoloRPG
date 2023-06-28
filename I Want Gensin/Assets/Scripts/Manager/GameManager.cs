@@ -6,6 +6,8 @@ public class GameManager : Singleton<GameManager>
 {
     Player player;
 
+    public Interact[] interacts;
+
     public Player Player => player;
 
     protected override void Initialize()

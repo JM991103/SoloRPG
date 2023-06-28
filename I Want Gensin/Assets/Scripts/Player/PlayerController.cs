@@ -2,12 +2,13 @@ using JetBrains.Annotations;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Interactions;
-using static UnityEngine.EventSystems.EventTrigger;
+
 
 public class PlayerController : MonoBehaviour
 {
@@ -93,7 +94,7 @@ public class PlayerController : MonoBehaviour
         player.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 10 * Time.deltaTime);
 
         JumpController();
-    }    
+    }
 
     private void OnMove(InputAction.CallbackContext context)
     {
@@ -105,7 +106,7 @@ public class PlayerController : MonoBehaviour
         inputDir.z = input.y;
 
         //Debug.Log($"{inputDir.x} {inputDir.z}");
-        
+
         if (!context.canceled)
         {
             Quaternion cameraYRotation = Quaternion.Euler(0, Camera.main.transform.rotation.eulerAngles.y, 0);  // 카메라의 y축 회전만 분리
@@ -145,7 +146,7 @@ public class PlayerController : MonoBehaviour
     void MoveChange(bool change)
     {
         if (change)
-        {            
+        {
             moveMode = MoveMode.Run;
             currentSpeed = runSpeed;
             if (inputDir != Vector3.zero)
@@ -154,7 +155,7 @@ public class PlayerController : MonoBehaviour
             }
         }
         else
-        {            
+        {
             moveMode = MoveMode.Walk;
             currentSpeed = walkSpeed;
             if (inputDir != Vector3.zero)
@@ -162,7 +163,7 @@ public class PlayerController : MonoBehaviour
                 anim.SetFloat("Speed", 0.5f);   // 움직이는 중일 때만 재생하는 애니메이션 변경
             }
         }
-    } 
+    }
 
     private void OnCursorLock(InputAction.CallbackContext _)
     {
@@ -171,9 +172,9 @@ public class PlayerController : MonoBehaviour
     }
 
     void CursorVisible(bool isCursor)
-    {        
+    {
         if (isCursor)
-        {            
+        {
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
         }
@@ -197,7 +198,7 @@ public class PlayerController : MonoBehaviour
     void JumpController()
     {
         isGrounded = Physics.CheckSphere(transform.position, groundDistance, groundMask);
-        
+
 
         if (isGrounded && velocity.y < 0)
         {
@@ -212,7 +213,7 @@ public class PlayerController : MonoBehaviour
 
 
     private void OnAttack(InputAction.CallbackContext context)
-    {       
+    {
         if (context.performed)
         {
             if (enemy)
@@ -239,39 +240,65 @@ public class PlayerController : MonoBehaviour
                         comboState++;   // 콤보 상태 1 증가 시키기;
                         anim.SetInteger("ComboState", comboState);  // 애니메이터에 증가된 콤보 상태 설정
                     }
-                } 
+                }
             }
-        }        
-    }
-
-    GameObject scanObj;
-
-    private void onInteraction(InputAction.CallbackContext _)
-    {
-        if (scanObj != null)
-        {
-            Debug.Log(scanObj.name);
         }
     }
-
 
     bool enemy;
     IBattle target;
 
-    private void OnTriggerEnter(Collider other)
+    private void onInteraction(InputAction.CallbackContext _)
     {
-        scanObj = other.gameObject;
+        //Collider[] colliders = Physics.OverlapSphere(player.position, 2.5f);
 
-        if (other.CompareTag("Enemy"))
+        //foreach (var coll in colliders)
+        //{
+        //    if (coll.CompareTag("Interact"))
+        //    {
+        //        //Debug.Log(coll);
+        //        scanObj = coll.gameObject.GetComponent<TestInteract>();                
+
+        //        Debug.Log(scanObj.itemName);
+
+        //    }
+        //}
+
+        OnPushFKey();
+    }
+
+    void OnPushFKey()
+    {
+        if(GameManager.Inst.Player.colliders[0].CompareTag("Interact"))
         {
-            enemy = true;
-            target = other.GetComponent<IBattle>();                      
+            TestInteract obj = GameManager.Inst.Player.colliders[0].GetComponent<TestInteract>();
+
+            obj.Acquisition();
         }
+        else
+        {
+            Debug.Log("먹을수 있는게 없다");
+        }
+
     }
 
-    private void OnTriggerExit(Collider other)
-    {
-        scanObj = null;
-        enemy = false;
-    }
+    //private void OnTriggerEnter(Collider other)
+    //{        
+    //    if (other.CompareTag("Enemy"))
+    //    {
+    //        enemy = true;
+    //        target = other.GetComponent<IBattle>();                      
+    //    }
+    //    else if (other.CompareTag("interact"))
+    //    {
+    //        scanObj = other.gameObject;
+    //    }
+
+    //}
+
+    //private void OnTriggerExit(Collider other)
+    //{
+    //    scanObj = null;
+    //    enemy = false;
+    //}
 }
