@@ -7,6 +7,9 @@ public class InventoryButton : MonoBehaviour
 {
     Button invenButton;
     Transform inventory;
+    PlayerController playerController;
+
+    bool isInvenToggle;
 
     private void Awake()
     {
@@ -14,11 +17,14 @@ public class InventoryButton : MonoBehaviour
 
         inventory = transform.parent.GetChild(6).GetComponent<Transform>();
 
-        invenButton.onClick.AddListener(InventToggle);
+        invenButton.onClick.AddListener(InvenToggle);
+
+        playerController = FindObjectOfType<PlayerController>();
     }
 
-    void InventToggle()
+    void InvenToggle()
     {
-        inventory.gameObject.SetActive(true);
+        Time.timeScale = 0;        
+        inventory.gameObject.SetActive(true);        
     }
 }

@@ -59,6 +59,8 @@ public class TestInteract : MonoBehaviour
 
             StartCoroutine(ResetTime());
             // 인벤토리에 아이템 넣기
+
+            GameManager.Inst.Inventory.AddItem(this, itemAddCount);
         }
     }
 
