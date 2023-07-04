@@ -10,6 +10,7 @@ public class TestInteract : MonoBehaviour
     public int itemAddCount;
     public Sprite invenIcon;
     public float resetTime;
+    public string itemExplanation;
     bool isAcquisition = false;
 
     MeshRenderer meshRenderer;
@@ -32,6 +33,7 @@ public class TestInteract : MonoBehaviour
                 itemAddCount = GameManager.Inst.interacts[i].itemAddCount;
                 invenIcon = GameManager.Inst.interacts[i].invenIcon;
                 resetTime = GameManager.Inst.interacts[i].resetTime;
+                itemExplanation = GameManager.Inst.interacts[i].itemExplanation;
             }
         }
     }

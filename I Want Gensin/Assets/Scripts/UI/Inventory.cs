@@ -97,7 +97,7 @@ public class Inventory : MonoBehaviour
         {
             selectItemExplanation.selectName.text = inventorySlots[index].InteractItem.itemName;
             selectItemExplanation.selectItemImage.sprite = inventorySlots[index].InteractItem.invenIcon;
-            selectItemExplanation.selectItemExplanation.text = "NOT FIND"; 
+            selectItemExplanation.selectItemExplanation.text = inventorySlots[index].InteractItem.itemExplanation;
         }
         else
         {
@@ -109,6 +109,6 @@ public class Inventory : MonoBehaviour
     {
         selectItemExplanation.selectName.text = null;
         selectItemExplanation.selectItemImage.sprite = null;
-        selectItemExplanation.selectItemExplanation.text = "null";
+        selectItemExplanation.selectItemExplanation.text = " ";
     }
 }

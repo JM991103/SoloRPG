@@ -15,4 +15,5 @@ public class Interact : ScriptableObject
 
     public float resetTime;
 
+    public string itemExplanation;
 }

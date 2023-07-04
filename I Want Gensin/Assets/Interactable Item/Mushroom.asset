@@ -17,3 +17,4 @@ MonoBehaviour:
   itemAddCount: 1
   invenIcon: {fileID: 21300000, guid: 23c2334fa6403f54cad4dda64b289194, type: 3}
   resetTime: 5
+  itemExplanation: "\uD754\uD558\uAC8C \uBCF4\uC774\uB294 \uBD89\uC740 \uBC84\uC12F\uC774\uB2E4."
