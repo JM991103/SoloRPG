@@ -275,6 +275,10 @@ public class PlayerController : MonoBehaviour
 
             obj.Acquisition();
         }
+        else if (GameManager.Inst.Player.colliders[0].CompareTag("NPC"))
+        {
+            Debug.Log("NPC");
+        }
         else
         {
             Debug.Log("먹을수 있는게 없다");

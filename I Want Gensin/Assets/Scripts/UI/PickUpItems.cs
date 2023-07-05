@@ -18,6 +18,7 @@ public class PickUpItems : MonoBehaviour
         {
             pickupItems[i].OnActiveChange(false);
             GameManager.Inst.Player.OnInteract[i] += OnInteractTest;
+            GameManager.Inst.Player.OnScanNPC[i] += OnScanNPC;
         }
     }
 
@@ -35,5 +36,18 @@ public class PickUpItems : MonoBehaviour
         }
     }
 
+    private void OnScanNPC(NPCScript scanNPC, int i)
+    {
+        if (scanNPC != null)
+        {
+            pickupItems[i].OnActiveChange(true);
+            pickupItems[i].PickUpItemName.text = scanNPC.gameObject.name;
+            pickupItems[i].PickItemImage.sprite = null;
+        }
+        else
+        {
+            pickupItems[i].OnActiveChange(false);
+        }
+    }
 
 }

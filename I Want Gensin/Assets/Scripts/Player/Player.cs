@@ -21,10 +21,13 @@ public class Player : MonoBehaviour, IBattle, IHealth
     public float DefancePower => defencePower;
 
     TestInteract scanObj;
+    NPCScript scanNPC;
 
     public Collider[] colliders;
 
-    public Action<TestInteract, int>[] OnInteract = new Action<TestInteract, int>[10];
+    public Action<TestInteract, int>[] OnInteract = new Action<TestInteract, int>[100];
+    public Action<NPCScript, int>[] OnScanNPC = new Action<NPCScript, int>[100];
+
 
     public float HP 
     {
@@ -86,9 +89,19 @@ public class Player : MonoBehaviour, IBattle, IHealth
                         OnInteract[i]?.Invoke(scanObj, i);
                     }
                 }
+                else if (colliders[i].CompareTag("NPC"))
+                {
+                    scanNPC = colliders[i].gameObject.GetComponent<NPCScript>();
+
+                    if (scanObj != null)
+                    {
+                        OnScanNPC[i]?.Invoke(scanNPC, i);
+                    }
+                }
                 else
                 {
                     OnInteract[i]?.Invoke(null, i);
+                    OnScanNPC[i]?.Invoke(null, i);
                 }
             }
         }

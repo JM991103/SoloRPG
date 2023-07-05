@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -30,7 +32,7 @@ public class Inventory : MonoBehaviour
 
     private void Start()
     {
-        this.gameObject.SetActive(false);
+        this.gameObject.SetActive(false);        
     }
 
     public void AddItem(TestInteract item, int count)
@@ -107,8 +109,8 @@ public class Inventory : MonoBehaviour
 
     void NullselectItemExplanation()
     {
-        selectItemExplanation.selectName.text = null;
+        selectItemExplanation.selectName.text = "Item Name";
         selectItemExplanation.selectItemImage.sprite = null;
-        selectItemExplanation.selectItemExplanation.text = " ";
+        selectItemExplanation.selectItemExplanation.text = "아이템 설명칸";
     }
 }
